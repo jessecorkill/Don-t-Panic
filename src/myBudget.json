@@ -1,0 +1,24 @@
+{
+    "expenses": [
+      ["m", "Jewlery", 13, 75],
+      ["m", "Wood & Huston", 20, 300],
+      ["m", "Internet", 14, 80],
+      ["m", "Cayla's Loan", 15, 410],
+      ["w", "Groceries", 3, 150],
+      ["w", "Gas", 1, 100],
+      ["w", "Pay Kids", 5, 30],
+      ["b", "Fun Day", 6, 150],
+      ["w", "Eat Out", 0, 60],
+      ["m", "Teeth & Bed", 13, 150],
+      ["m", "Song Writing Course", 15, 50],
+      ["m", "Baby Bill", 30, 263],
+      ["m", "Cayla's Hospital Bill", 30, 50]
+    ],
+    "income": [
+      ["b", "Zimmer", 15, 1091.72],
+      ["m", "Walk in Faith", 30, 800],
+      ["m", "Foster Pay", 15, 850],
+      ["m", "Cayla's Freelance Pay", 30, 200]
+    ]
+  }
+  
