@@ -1,6 +1,6 @@
 import "./styles.css";
 
-const budget = require("./myBudget.json");
+const budget = require("../../src/myBudget.json");
 
 var expenses = budget.expenses;
 var income = budget.income;
