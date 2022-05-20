@@ -1,6 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {ApolloClient, InMemoryCache, HttpLink, ApolloLink, ApolloProvider, useQuery, gql} from '@apollo/client'
+// import Budget from './budgetHandler';
 
 //Function Component for Top Navigation
 function NavButton(props){
@@ -24,14 +26,45 @@ function NavButton(props){
 }
 
 //Function Component for Login View
+function LoginView(props){
+  return(
+    <div id="loginView">
+      <form className="" onSubmit="">
+        <label>
+          Username:
+          <input type="text" value=""></input>
+        </label>
+        <label>
+          Password:
+          <input type="password" value=""></input>
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
 
-//Function Component for Creating Budget View
-function BudgetCalendarView(props){
-  
+
+    </div>
+  )
 }
 
 
 //Function Component for Calendar View
+function CalendarView(props){
+  const theBudget = props.budget;
+  if(props.budget !== null){
+    const budgetDays = theBudget.map((day) => <div className="calendarDay" key={day[0]}><h2>{Date.parse(day[0])}</h2><p>{day[1]}</p></div>);
+
+    return(
+      <div id="calendarContainer">
+        {budgetDays}
+      </div>
+    )
+  }else{
+    return(
+      <h3>You have to make a budget first!</h3>
+    )
+  }
+
+}
 
 class App extends React.Component {
   constructor(props){
@@ -40,13 +73,25 @@ class App extends React.Component {
       loggedIn: true,
       modalScreen: 'edit',
       navState: 'hidden',
+      userName: '',
+      password: '',
+      budget: null,
+
 
     }
 
   }
   componentDidMount(){
-      //if data is available, fetch data 
-      
+      console.log('component mounted')
+      //if data is available, fetch data
+      //To DO: fetch data from server
+      const budget = require("./myBudget.json");
+      if(budget !== null){
+        this.setState({
+          budget: budget,
+        })
+      }
+
   }
   //function for handling nav click
   handleNavClick(self){
@@ -72,6 +117,8 @@ class App extends React.Component {
     return(
       <div className="App">
         <NavButton navState={this.state.navState} budgetNav={()=> this.handleBudgetOverlook(this)} onClick={() => this.handleNavClick(this)}></NavButton>
+        <CalendarView budget={this.state.budget}></CalendarView>
+        
       </div>
       
     );

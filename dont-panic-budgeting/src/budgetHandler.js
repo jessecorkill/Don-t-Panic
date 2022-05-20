@@ -1,5 +1,3 @@
-import "./styles.css";
-
 const budget = require("../../src/myBudget.json");
 
 var expenses = budget.expenses;
