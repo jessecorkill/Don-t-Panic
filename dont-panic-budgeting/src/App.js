@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {ApolloClient, InMemoryCache, HttpLink, ApolloLink, ApolloProvider, useQuery, gql} from '@apollo/client'
+import {ApolloClient, InMemoryCache, HttpLink, ApolloLink, ApolloProvider, useQuery, gql, createHttpLink} from '@apollo/client'
 // import Budget from './budgetHandler';
 
 //Function Component for Top Navigation
@@ -91,6 +91,38 @@ class App extends React.Component {
           budget: budget,
         })
       }
+      const link = new createHttpLink({
+        uri: 'https://budget.caylaslifemusic.com',
+        credentials: 'include',
+        headers: {
+          mode: 'no-cors',
+          'content-type': 'application/json',
+          'Method': 'POST',
+        }
+      })
+      const client = new ApolloClient({
+        cache: new InMemoryCache(),
+        link,
+      });
+      // const client = ...
+
+      client
+      .query({
+        query: gql`
+        query NewQuery {
+          budgets(where: {title: "jcorkill"}) {
+            nodes {
+              budgetFields {
+                uploadJson {
+                  mediaItemUrl
+                }
+              }
+            }
+          }
+        }
+        `
+      })
+      .then(result => console.log(result));
 
   }
   //function for handling nav click
