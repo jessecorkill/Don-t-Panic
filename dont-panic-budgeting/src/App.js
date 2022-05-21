@@ -51,7 +51,7 @@ function LoginView(props){
 function CalendarView(props){
   const theBudget = props.budget;
   if(props.budget !== null){
-    const budgetDays = theBudget.map((day) => <div className="calendarDay" key={day[0]}><h2>{Date.parse(day[0])}</h2><p>{day[1]}</p></div>);
+    const budgetDays = theBudget.map((day) => <div className="calendarDay" key={day[0]}><h2>{new Date(day[0]).getDate()}</h2><p>${day[1]}</p></div>);
 
     return(
       <div id="calendarContainer">

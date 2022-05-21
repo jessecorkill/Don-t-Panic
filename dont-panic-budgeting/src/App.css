@@ -5,6 +5,7 @@
   position:absolute;
   right: 0;
   background-color: #e3e3e3;
+  z-index: 10;
 
 }
 .hidden{
@@ -18,9 +19,15 @@
   height: 100vh;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  position: absolute;
 }
 .calendarDay{
   border: solid black 2px;
-  width: 15%;
-  height: auto;
+  width: 16%;
+  height: 16.5%;
+}
+.calendarDay h2{
+  margin-top: 0;
+  text-align: left;
 }
