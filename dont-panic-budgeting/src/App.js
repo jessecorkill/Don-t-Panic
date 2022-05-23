@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {ApolloClient, InMemoryCache, HttpLink, ApolloLink, ApolloProvider, useQuery, gql, createHttpLink} from '@apollo/client'
+import 
 // import Budget from './budgetHandler';
 
 //Function Component for Top Navigation
@@ -93,13 +94,22 @@ class App extends React.Component {
       }
       const link = new createHttpLink({
         uri: 'https://budget.caylaslifemusic.com',
-        credentials: 'include',
+        credentials: 'same-origin',
         headers: {
-          mode: 'no-cors',
           'content-type': 'application/json',
-          'Method': 'POST',
+          'Method': 'GET',
         }
       })
+      // enable cors
+      var express = require('express')
+    var cors = require('cors')
+    var app = express()
+      var corsOptions = {
+        origin: '<insert uri of front-end domain>',
+        credentials: true // <-- REQUIRED backend setting
+      };
+
+      app.use(cors(corsOptions));
       const client = new ApolloClient({
         cache: new InMemoryCache(),
         link,
