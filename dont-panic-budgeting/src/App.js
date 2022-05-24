@@ -1,9 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {ApolloClient, InMemoryCache, HttpLink, ApolloLink, ApolloProvider, useQuery, gql, createHttpLink} from '@apollo/client'
-import 
-// import Budget from './budgetHandler';
+import axios from 'axios';
+
 
 //Function Component for Top Navigation
 function NavButton(props){
@@ -92,47 +91,33 @@ class App extends React.Component {
           budget: budget,
         })
       }
-      const link = new createHttpLink({
-        uri: 'https://budget.caylaslifemusic.com',
-        credentials: 'same-origin',
-        headers: {
-          'content-type': 'application/json',
-          'Method': 'GET',
-        }
-      })
-      // enable cors
-      var express = require('express')
-    var cors = require('cors')
-    var app = express()
-      var corsOptions = {
-        origin: '<insert uri of front-end domain>',
-        credentials: true // <-- REQUIRED backend setting
-      };
-
-      app.use(cors(corsOptions));
-      const client = new ApolloClient({
-        cache: new InMemoryCache(),
-        link,
-      });
-      // const client = ...
-
-      client
-      .query({
-        query: gql`
-        query NewQuery {
-          budgets(where: {title: "jcorkill"}) {
-            nodes {
-              budgetFields {
-                uploadJson {
-                  mediaItemUrl
+      axios({
+        url: 'https://budget.caylaslifemusic.com/graphql',
+        method: 'get',
+        headers:{
+          'Authorization': `Bearer ${process.env.WORDPRESS_AUTH_REFRESH_TOKEN}`,
+          'Content-Type': 'application/json',
+          
+        },
+        data:{
+          query:`
+          query NewQuery {
+            budgets(where: {title: "jcorkill"}) {
+              nodes {
+                budgetFields {
+                  uploadJson {
+                    mediaItemUrl
+                  }
                 }
               }
             }
           }
+          `
         }
-        `
+      }).then((result) => {
+        console.log(result.data);
       })
-      .then(result => console.log(result));
+
 
   }
   //function for handling nav click
