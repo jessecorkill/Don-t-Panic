@@ -93,10 +93,10 @@ class App extends React.Component {
       }
       axios({
         url: 'https://budget.caylaslifemusic.com/graphql',
-        method: 'get',
+        method: 'post',
         headers:{
-          'Authorization': `Bearer ${process.env.WORDPRESS_AUTH_REFRESH_TOKEN}`,
-          'Content-Type': 'application/json',
+          responseType: 'json',
+
           
         },
         data:{
