@@ -126,9 +126,9 @@ class App extends React.Component {
       );
   }
 
-  setBudget(this, result){
-    let self = this;
+  setBudget(self, result){
     let rawBudget = result.data.budgets.nodes[0].budgetFields.uploadJson.mediaItemUrl;
+    console.log(rawBudget);
     const budgetParsed = new Budget;
 
       this.setState({

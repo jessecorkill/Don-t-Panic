@@ -5,8 +5,6 @@ export class Budget{
   budgetThirtyDays(todaysBal, budgetObj){
     var expenses = budgetObj.expenses;
     var income = budgetObj.income;
-    //Set current Balance
-    var todaysBal = 400;
     //Balance Prediction Var
   
   //Array for storing predicted balances for each day in 30 iterations
