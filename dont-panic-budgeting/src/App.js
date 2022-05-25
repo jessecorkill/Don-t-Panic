@@ -1,9 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+
 import {ApolloClient, InMemoryCache, HttpLink, ApolloLink, ApolloProvider, useQuery, gql, createHttpLink} from '@apollo/client'
-import 
-// import Budget from './budgetHandler';
+
+import {Budget} from './budgetHandler.js';
 
 //Function Component for Top Navigation
 function NavButton(props){
@@ -24,7 +25,7 @@ function NavButton(props){
 
     </div>
   )
-}
+} 
 
 //Function Component for Login View
 function LoginView(props){
@@ -76,7 +77,9 @@ class App extends React.Component {
       navState: 'hidden',
       userName: '',
       password: '',
-      budget: null,
+      balance: 400,
+      budgetObj: null,
+      budgetParsed: null,
 
 
     }
@@ -92,29 +95,15 @@ class App extends React.Component {
           budget: budget,
         })
       }
-      const link = new createHttpLink({
-        uri: 'https://budget.caylaslifemusic.com',
+      const client = new ApolloClient({
+        uri: 'https://budget.caylaslifemusic.com/graphql',
+        cache: new InMemoryCache(),
         credentials: 'same-origin',
         headers: {
           'content-type': 'application/json',
-          'Method': 'GET',
+          'Method': 'POST',
         }
       })
-      // enable cors
-      var express = require('express')
-    var cors = require('cors')
-    var app = express()
-      var corsOptions = {
-        origin: '<insert uri of front-end domain>',
-        credentials: true // <-- REQUIRED backend setting
-      };
-
-      app.use(cors(corsOptions));
-      const client = new ApolloClient({
-        cache: new InMemoryCache(),
-        link,
-      });
-      // const client = ...
 
       client
       .query({
@@ -132,9 +121,21 @@ class App extends React.Component {
         }
         `
       })
-      .then(result => console.log(result));
-
+      .then(result =>       
+        this.setBudget(this, result)
+      );
   }
+
+  setBudget(this, result){
+    let self = this;
+    let rawBudget = result.data.budgets.nodes[0].budgetFields.uploadJson.mediaItemUrl;
+    const budgetParsed = new Budget;
+
+      this.setState({
+        budgetParsed: budgetParsed.budgetThirtyDays(self.state.balance, rawBudget)
+      })
+  }
+
   //function for handling nav click
   handleNavClick(self){
     //check state of nav menu
@@ -159,7 +160,7 @@ class App extends React.Component {
     return(
       <div className="App">
         <NavButton navState={this.state.navState} budgetNav={()=> this.handleBudgetOverlook(this)} onClick={() => this.handleNavClick(this)}></NavButton>
-        <CalendarView budget={this.state.budget}></CalendarView>
+        <CalendarView budget={this.state.budgetParsed}></CalendarView>
         
       </div>
       

@@ -1,15 +1,13 @@
-const budget = require("../../src/myBudget.json");
-
-var expenses = budget.expenses;
-var income = budget.income;
-class Budget{
+export class Budget{
   constructor(){
 
   }
-  budgetThirtyDays(todaysBal){
+  budgetThirtyDays(todaysBal, budgetObj){
+    var expenses = budgetObj.expenses;
+    var income = budgetObj.income;
     //Set current Balance
-  var todaysBal = 400;
-  //Balance Prediction Var
+    var todaysBal = 400;
+    //Balance Prediction Var
   
   //Array for storing predicted balances for each day in 30 iterations
   let predictedBal = new Array(31).fill(30);
@@ -119,9 +117,8 @@ class Budget{
   }
   console.log(data);
   var dataString = JSON.stringify(data);
-  
+  return dataString;
   }
   
 
 }
-export default Budget;
