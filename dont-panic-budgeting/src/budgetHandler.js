@@ -49,7 +49,7 @@ export class Budget{
           assocDetails[index].push(element[1]);
           //Add same balance to the predictedBal 15 indexes over
           //Has the date currently passed? If so target fifteen days behind the current index
-          if (today > date) {
+          if (today.getDay() > date.getDay()) {
             predictedBal[index - 16] = predictedBal[index - 16] + element[3];
             assocDetails[index - 16].push(element[1]);
           } else {
@@ -86,7 +86,7 @@ export class Budget{
           assocDetails[index].push(element[1]);
           //Add same balance to the predictedBal 15 indexes over
           //Has the target date currently passed? If so target fifteen days behind the current index
-          if (today > date) {
+          if (today.getDay() > date.getDay()) {
             predictedBal[index - 16] = predictedBal[index - 16] - element[3];
             assocDetails[index - 16].push(element[1]);
           } else {
