@@ -1,9 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-
 import {ApolloClient, InMemoryCache, HttpLink, ApolloLink, ApolloProvider, useQuery, gql, createHttpLink} from '@apollo/client'
-
+import axios from 'axios';
 import {Budget} from './budgetHandler.js';
 
 //Function Component for Top Navigation
@@ -52,6 +51,7 @@ function LoginView(props){
 //Function Component for Calendar View
 function CalendarView(props){
   const theBudget = props.budget;
+  console.log(typeof(theBudget))
   if(props.budget !== null){
     const budgetDays = theBudget.map((day) => <div className="calendarDay" key={day[0]}><h2>{new Date(day[0]).getDate()}</h2><p>${day[1]}</p></div>);
 
@@ -88,13 +88,6 @@ class App extends React.Component {
   componentDidMount(){
       console.log('component mounted')
       //if data is available, fetch data
-      //To DO: fetch data from server
-      const budget = require("./myBudget.json");
-      if(budget !== null){
-        this.setState({
-          budget: budget,
-        })
-      }
       const client = new ApolloClient({
         uri: 'https://budget.caylaslifemusic.com/graphql',
         cache: new InMemoryCache(),
@@ -122,19 +115,32 @@ class App extends React.Component {
         `
       })
       .then(result =>       
-        this.setBudget(this, result)
+        this.passBudget(this, result)
       );
   }
 
-  setBudget(self, result){
-    let rawBudget = result.data.budgets.nodes[0].budgetFields.uploadJson.mediaItemUrl;
-    console.log(rawBudget);
-    const budgetParsed = new Budget;
+  passBudget(self, result){
 
-      this.setState({
-        budgetParsed: budgetParsed.budgetThirtyDays(self.state.balance, rawBudget)
+    let rawBudgetUrl = result.data.budgets.nodes[0].budgetFields.uploadJson.mediaItemUrl;
+    //fetch JSON from url via axios
+    axios({
+      method: 'get',
+      url: rawBudgetUrl,
+      responseType: 'json',
+    })
+    .then(function (response){           
+      console.log(response.data);
+      const budgetParsed = new Budget;
+
+      self.setState({
+        budgetParsed: budgetParsed.budgetThirtyDays(self.state.balance, response.data)
       })
+
+    })
+      
   }
+  
+
 
   //function for handling nav click
   handleNavClick(self){

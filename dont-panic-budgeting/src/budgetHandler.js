@@ -49,12 +49,12 @@ export class Budget{
           assocDetails[index].push(element[1]);
           //Add same balance to the predictedBal 15 indexes over
           //Has the date currently passed? If so target fifteen days behind the current index
-          if (today.getDate() > date.getDate()) {
+          if (today > date) {
             predictedBal[index - 16] = predictedBal[index - 16] + element[3];
             assocDetails[index - 16].push(element[1]);
           } else {
-            predictedBal[index + 15] = predictedBal[index + 15] + element[3];
-            assocDetails[index + 15].push(element[1]);
+            predictedBal[index] = predictedBal[index + 15] + element[3];
+            assocDetails[index].push(element[1]);
           }
         } else {
         }
@@ -72,6 +72,7 @@ export class Budget{
     });
     //Check budget for expenses
     expenses.forEach((element) => {
+      //if the element's day is the same as the current iteration's day, start working
       if (element[2] === date.getDate() && element[0] !== "w") {
         //Monthly Income
         if (element[0] === "m") {
@@ -84,11 +85,12 @@ export class Budget{
           predictedBal[index] = predictedBal[index] - element[3];
           assocDetails[index].push(element[1]);
           //Add same balance to the predictedBal 15 indexes over
-          //Has the date currently passed? If so target fifteen days behind the current index
-          if (today.getDate() > date.getDate()) {
+          //Has the target date currently passed? If so target fifteen days behind the current index
+          if (today > date) {
             predictedBal[index - 16] = predictedBal[index - 16] - element[3];
             assocDetails[index - 16].push(element[1]);
           } else {
+            //If the data has not passed, target fifteen days after
             predictedBal[index + 15] = predictedBal[index + 15] - element[3];
             assocDetails[index + 15].push(element[1]);
           }
@@ -107,15 +109,20 @@ export class Budget{
       }
     });
   }
+  console.log('Associated Dates');
+  console.log(assocDates);
+  console.log('Predicted Bal');
+  console.log(predictedBal);
+  console.log('Associcated Details');
+  console.log(assocDetails);
   let data = Array.from({ length: 31 }, () => []);
   for (var index = 0; index <= 30; index++) {
     data[index].push(assocDates[index]);
     data[index].push(predictedBal[index]);
     data[index].push(assocDetails[index]);
   }
-  console.log(data);
   var dataString = JSON.stringify(data);
-  return dataString;
+  return data;
   }
   
 
