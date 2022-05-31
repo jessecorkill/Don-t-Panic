@@ -8,11 +8,11 @@ export class Budget{
     //Balance Prediction Var
   
   //Array for storing predicted balances for each day in 30 iterations
-  let predictedBal = new Array(31).fill(30);
+  let predictedBal = new Array(30).fill(30);
   //Array for storing associated Date() for each day in 30 iterations
-  let assocDates = new Array(31).fill(null);
+  let assocDates = new Array(30).fill(null);
   //Array for storing details of what transpired on the predicted day
-  let assocDetails = Array.from({ length: 31 }, () => []);
+  let assocDetails = Array.from({ length: 30 }, () => []);
   
   //Insert todaysBal into first day of our new array
   predictedBal[0] = todaysBal;
@@ -21,12 +21,13 @@ export class Budget{
   const today = new Date();
   
   //Loop through next 30 Days of expenses & income
-  for (var index = 0; index <= 30; index++) {
+  for (var index = 0; index < 30; index++) {
     //Get the day
     var date = new Date(today);
     date.setDate(date.getDate() + index);
     //Record the Date obj in the assocDates array
     assocDates[index] = date;
+    console.log(index);
   
     //Prime this day's balance with yesterday's balance, unless it is the first day.
     if (index !== 0) {
@@ -48,13 +49,16 @@ export class Budget{
           predictedBal[index] = predictedBal[index] + element[3];
           assocDetails[index].push(element[1]);
           //Add same balance to the predictedBal 15 indexes over
-          //Has the date currently passed? If so target fifteen days behind the current index
-          if (today.getDay() > date.getDay()) {
-            predictedBal[index - 16] = predictedBal[index - 16] + element[3];
-            assocDetails[index - 16].push(element[1]);
-          } else {
-            predictedBal[index] = predictedBal[index + 15] + element[3];
+          //If there is, at least, 15 days left to predict, push expense to arrays.
+          if (index <= 14) {
+            //push expense to current iteration's day
+            predictedBal[index] = predictedBal[index] + element[3];
             assocDetails[index].push(element[1]);
+            //push expense to 14 days (two weeks) in future
+            predictedBal[index + 14] = predictedBal[index + 14] + element[3];
+            assocDetails[index + 14].push(element[1]);
+          } else {
+            console.log("Charge fell outside of 30 day prediction");
           }
         } else {
         }
@@ -85,14 +89,17 @@ export class Budget{
           predictedBal[index] = predictedBal[index] - element[3];
           assocDetails[index].push(element[1]);
           //Add same balance to the predictedBal 15 indexes over
-          //Has the target date currently passed? If so target fifteen days behind the current index
-          if (today.getDay() > date.getDay()) {
-            predictedBal[index - 16] = predictedBal[index - 16] - element[3];
-            assocDetails[index - 16].push(element[1]);
+          //If there is, at least, 15 days left to predict, push expense to arrays.
+          if (index <= 14) {
+            //push expense to current iteration's day
+            predictedBal[index] = predictedBal[index] - element[3];
+            assocDetails[index].push(element[1]);
+            //push expense to 14 days (two weeks) in future
+            predictedBal[index + 14] = predictedBal[index + 14] - element[3];
+            assocDetails[index + 14].push(element[1]);
           } else {
-            //If the data has not passed, target fifteen days after
-            predictedBal[index + 15] = predictedBal[index + 15] - element[3];
-            assocDetails[index + 15].push(element[1]);
+            console.log("Charge fell outside of 30 day prediction");
+            console.log(element[1]);
           }
         } else {
         }
@@ -122,6 +129,7 @@ export class Budget{
     data[index].push(assocDetails[index]);
   }
   var dataString = JSON.stringify(data);
+  console.log(data);
   return data;
   }
   

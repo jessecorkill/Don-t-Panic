@@ -77,7 +77,7 @@ class App extends React.Component {
       navState: 'hidden',
       userName: '',
       password: '',
-      balance: 400,
+      balance: 342,
       budgetObj: null,
       budgetParsed: null,
 
