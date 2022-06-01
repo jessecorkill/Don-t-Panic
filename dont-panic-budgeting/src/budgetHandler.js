@@ -46,14 +46,12 @@ export class Budget{
           assocDetails[index].push(element[1]);
         } else if (element[0] === "b") {
           //Bi-Weekly or Salary Income
+          //push expense to current iteration's day
           predictedBal[index] = predictedBal[index] + element[3];
           assocDetails[index].push(element[1]);
           //Add same balance to the predictedBal 15 indexes over
           //If there is, at least, 15 days left to predict, push expense to arrays.
           if (index <= 14) {
-            //push expense to current iteration's day
-            predictedBal[index] = predictedBal[index] + element[3];
-            assocDetails[index].push(element[1]);
             //push expense to 14 days (two weeks) in future
             predictedBal[index + 14] = predictedBal[index + 14] + element[3];
             assocDetails[index + 14].push(element[1]);
@@ -86,14 +84,12 @@ export class Budget{
           assocDetails[index].push(element[1]);
         } else if (element[0] === "b") {
           //Bi-Weekly or Salary Income
+          //push expense to current iteration's day
           predictedBal[index] = predictedBal[index] - element[3];
           assocDetails[index].push(element[1]);
           //Add same balance to the predictedBal 15 indexes over
           //If there is, at least, 15 days left to predict, push expense to arrays.
           if (index <= 14) {
-            //push expense to current iteration's day
-            predictedBal[index] = predictedBal[index] - element[3];
-            assocDetails[index].push(element[1]);
             //push expense to 14 days (two weeks) in future
             predictedBal[index + 14] = predictedBal[index + 14] - element[3];
             assocDetails[index + 14].push(element[1]);
@@ -116,20 +112,20 @@ export class Budget{
       }
     });
   }
-  console.log('Associated Dates');
-  console.log(assocDates);
-  console.log('Predicted Bal');
-  console.log(predictedBal);
-  console.log('Associcated Details');
-  console.log(assocDetails);
-  let data = Array.from({ length: 31 }, () => []);
-  for (var index = 0; index <= 30; index++) {
+  // console.log('Associated Dates');
+  // console.log(assocDates);
+  // console.log('Predicted Bal');
+  // console.log(predictedBal);
+  // console.log('Associcated Details');
+  // console.log(assocDetails);
+  let data = Array.from({ length: 30 }, () => []);
+  for (var index = 0; index < 30; index++) {
     data[index].push(assocDates[index]);
     data[index].push(predictedBal[index]);
     data[index].push(assocDetails[index]);
   }
   var dataString = JSON.stringify(data);
-  console.log(data);
+  console.log(JSON.stringify(data));
   return data;
   }
   
