@@ -2,8 +2,8 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import {ApolloClient, InMemoryCache, HttpLink, ApolloLink, ApolloProvider, useQuery, gql, createHttpLink} from '@apollo/client'
-import 
-// import Budget from './budgetHandler';
+import axios from 'axios';
+import {Budget} from './budgetHandler.js';
 
 //Function Component for Top Navigation
 function NavButton(props){
@@ -24,7 +24,7 @@ function NavButton(props){
 
     </div>
   )
-}
+} 
 
 //Function Component for Login View
 function LoginView(props){
@@ -51,11 +51,20 @@ function LoginView(props){
 //Function Component for Calendar View
 function CalendarView(props){
   const theBudget = props.budget;
+
+  //TO DO - Convert budgetDays to a function sub component that can be clicked on to change modal view
+  
   if(props.budget !== null){
-    const budgetDays = theBudget.map((day) => <div className="calendarDay" key={day[0]}><h2>{new Date(day[0]).getDate()}</h2><p>${day[1]}</p></div>);
+    //To DO - Compensate offset for first day of theBudget by spoofing calendarDay divs ahead of 
+    //Get current day of the week
+    let weekday = new Date(theBudget[0][0]).getDay();
+    let spacerArr = new Array(weekday).fill(null);
+    const fillDays = spacerArr.map((day) => <div className="calendarDay"></div>);
+    const budgetDays = theBudget.map((day) => <div className="calendarDay" key={day[0]}><h2>{new Date(day[0]).getDate()}</h2><p>${day[1]}</p><p>{day[2]}</p></div>);
 
     return(
       <div id="calendarContainer">
+        {fillDays}
         {budgetDays}
       </div>
     )
@@ -76,7 +85,9 @@ class App extends React.Component {
       navState: 'hidden',
       userName: '',
       password: '',
-      budget: null,
+      balance: 342,
+      budgetObj: null,
+      budgetParsed: null,
 
 
     }
@@ -85,36 +96,15 @@ class App extends React.Component {
   componentDidMount(){
       console.log('component mounted')
       //if data is available, fetch data
-      //To DO: fetch data from server
-      const budget = require("./myBudget.json");
-      if(budget !== null){
-        this.setState({
-          budget: budget,
-        })
-      }
-      const link = new createHttpLink({
-        uri: 'https://budget.caylaslifemusic.com',
+      const client = new ApolloClient({
+        uri: 'https://budget.caylaslifemusic.com/graphql',
+        cache: new InMemoryCache(),
         credentials: 'same-origin',
         headers: {
           'content-type': 'application/json',
-          'Method': 'GET',
+          'Method': 'POST',
         }
       })
-      // enable cors
-      var express = require('express')
-    var cors = require('cors')
-    var app = express()
-      var corsOptions = {
-        origin: '<insert uri of front-end domain>',
-        credentials: true // <-- REQUIRED backend setting
-      };
-
-      app.use(cors(corsOptions));
-      const client = new ApolloClient({
-        cache: new InMemoryCache(),
-        link,
-      });
-      // const client = ...
 
       client
       .query({
@@ -132,9 +122,34 @@ class App extends React.Component {
         }
         `
       })
-      .then(result => console.log(result));
-
+      .then(result =>       
+        this.passBudget(this, result)
+      );
   }
+
+  passBudget(self, result){
+
+    let rawBudgetUrl = result.data.budgets.nodes[0].budgetFields.uploadJson.mediaItemUrl;
+    //fetch JSON from url via axios
+    axios({
+      method: 'get',
+      url: rawBudgetUrl,
+      responseType: 'json',
+    })
+    .then(function (response){           
+      console.log(response.data);
+      const budgetParsed = new Budget;
+
+      self.setState({
+        budgetParsed: budgetParsed.budgetThirtyDays(self.state.balance, response.data)
+      })
+
+    })
+      
+  }
+  
+
+
   //function for handling nav click
   handleNavClick(self){
     //check state of nav menu
@@ -159,7 +174,7 @@ class App extends React.Component {
     return(
       <div className="App">
         <NavButton navState={this.state.navState} budgetNav={()=> this.handleBudgetOverlook(this)} onClick={() => this.handleNavClick(this)}></NavButton>
-        <CalendarView budget={this.state.budget}></CalendarView>
+        <CalendarView budget={this.state.budgetParsed}></CalendarView>
         
       </div>
       

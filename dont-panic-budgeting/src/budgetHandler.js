@@ -1,22 +1,18 @@
-const budget = require("../../src/myBudget.json");
-
-var expenses = budget.expenses;
-var income = budget.income;
-class Budget{
+export class Budget{
   constructor(){
 
   }
-  budgetThirtyDays(todaysBal){
-    //Set current Balance
-  var todaysBal = 400;
-  //Balance Prediction Var
+  budgetThirtyDays(todaysBal, budgetObj){
+    var expenses = budgetObj.expenses;
+    var income = budgetObj.income;
+    //Balance Prediction Var
   
   //Array for storing predicted balances for each day in 30 iterations
-  let predictedBal = new Array(31).fill(30);
+  let predictedBal = new Array(30).fill(30);
   //Array for storing associated Date() for each day in 30 iterations
-  let assocDates = new Array(31).fill(null);
+  let assocDates = new Array(30).fill(null);
   //Array for storing details of what transpired on the predicted day
-  let assocDetails = Array.from({ length: 31 }, () => []);
+  let assocDetails = Array.from({ length: 30 }, () => []);
   
   //Insert todaysBal into first day of our new array
   predictedBal[0] = todaysBal;
@@ -25,12 +21,13 @@ class Budget{
   const today = new Date();
   
   //Loop through next 30 Days of expenses & income
-  for (var index = 0; index <= 30; index++) {
+  for (var index = 0; index < 30; index++) {
     //Get the day
     var date = new Date(today);
     date.setDate(date.getDate() + index);
     //Record the Date obj in the assocDates array
     assocDates[index] = date;
+    console.log(index);
   
     //Prime this day's balance with yesterday's balance, unless it is the first day.
     if (index !== 0) {
@@ -49,16 +46,17 @@ class Budget{
           assocDetails[index].push(element[1]);
         } else if (element[0] === "b") {
           //Bi-Weekly or Salary Income
+          //push expense to current iteration's day
           predictedBal[index] = predictedBal[index] + element[3];
           assocDetails[index].push(element[1]);
           //Add same balance to the predictedBal 15 indexes over
-          //Has the date currently passed? If so target fifteen days behind the current index
-          if (today.getDate() > date.getDate()) {
-            predictedBal[index - 16] = predictedBal[index - 16] + element[3];
-            assocDetails[index - 16].push(element[1]);
+          //If there is, at least, 15 days left to predict, push expense to arrays.
+          if (index <= 14) {
+            //push expense to 14 days (two weeks) in future
+            predictedBal[index + 14] = predictedBal[index + 14] + element[3];
+            assocDetails[index + 14].push(element[1]);
           } else {
-            predictedBal[index + 15] = predictedBal[index + 15] + element[3];
-            assocDetails[index + 15].push(element[1]);
+            console.log("Charge fell outside of 30 day prediction");
           }
         } else {
         }
@@ -76,6 +74,7 @@ class Budget{
     });
     //Check budget for expenses
     expenses.forEach((element) => {
+      //if the element's day is the same as the current iteration's day, start working
       if (element[2] === date.getDate() && element[0] !== "w") {
         //Monthly Income
         if (element[0] === "m") {
@@ -85,16 +84,18 @@ class Budget{
           assocDetails[index].push(element[1]);
         } else if (element[0] === "b") {
           //Bi-Weekly or Salary Income
+          //push expense to current iteration's day
           predictedBal[index] = predictedBal[index] - element[3];
           assocDetails[index].push(element[1]);
           //Add same balance to the predictedBal 15 indexes over
-          //Has the date currently passed? If so target fifteen days behind the current index
-          if (today.getDate() > date.getDate()) {
-            predictedBal[index - 16] = predictedBal[index - 16] - element[3];
-            assocDetails[index - 16].push(element[1]);
+          //If there is, at least, 15 days left to predict, push expense to arrays.
+          if (index <= 14) {
+            //push expense to 14 days (two weeks) in future
+            predictedBal[index + 14] = predictedBal[index + 14] - element[3];
+            assocDetails[index + 14].push(element[1]);
           } else {
-            predictedBal[index + 15] = predictedBal[index + 15] - element[3];
-            assocDetails[index + 15].push(element[1]);
+            console.log("Charge fell outside of 30 day prediction");
+            console.log(element[1]);
           }
         } else {
         }
@@ -111,17 +112,22 @@ class Budget{
       }
     });
   }
-  let data = Array.from({ length: 31 }, () => []);
-  for (var index = 0; index <= 30; index++) {
+  // console.log('Associated Dates');
+  // console.log(assocDates);
+  // console.log('Predicted Bal');
+  // console.log(predictedBal);
+  // console.log('Associcated Details');
+  // console.log(assocDetails);
+  let data = Array.from({ length: 30 }, () => []);
+  for (var index = 0; index < 30; index++) {
     data[index].push(assocDates[index]);
     data[index].push(predictedBal[index]);
     data[index].push(assocDetails[index]);
   }
-  console.log(data);
   var dataString = JSON.stringify(data);
-  
+  console.log(JSON.stringify(data));
+  return data;
   }
   
 
 }
-export default Budget;
