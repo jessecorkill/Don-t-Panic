@@ -146,37 +146,40 @@ class App extends React.Component {
   passBudget(self, result){
     //Parse Data into the expected format for the budgetHandler.js & then pass it to the Budget obj
     let expenses = result.data.budgets.nodes[0].budgetFields.expenses;
-    let formatedExpenses = Array.from({ length: expenses.length }, () => []);
+    // let formatedExpenses = Array.from({ length: expenses.length }, () => []);
     let income = result.data.budgets.nodes[0].budgetFields.income;
-    let formatedIncome = Array.from({ length: income.length }, () => []);
+    // let formatedIncome = Array.from({ length: income.length }, () => []);
 
     //Convert Data into -> Freq / Desc / Day / Amnt - format
-    expenses.forEach(function(element, index){
-      formatedExpenses[index].push(expenses[index].frequency)
-      formatedExpenses[index].push(expenses[index].expenseName)
-      if(expenses[index].frequency !== 'w'){
-        formatedExpenses[index].push(expenses[index].chargeDay)
-      }else{
-        formatedExpenses[index].push(expenses[index].weekDay)
-      }
-      formatedExpenses[index].push(expenses[index].amount)
-    });
-    income.forEach(function(element, index){
-      formatedIncome[index].push(expenses[index].frequency)
-      formatedIncome[index].push(expenses[index].expenseName)
-      if(income[index].frequency !== 'w'){
-        formatedIncome[index].push(expenses[index].chargeDay)
-      }else{
-        formatedIncome[index].push(expenses[index].weekDay)
-      }
-      formatedIncome[index].push(expenses[index].amount)
-    });
+    // expenses.forEach(function(element, index){
+    //   formatedExpenses[index].push(expenses[index].frequency)
+    //   formatedExpenses[index].push(expenses[index].expenseName)
+    //   if(expenses[index].frequency !== 'w'){
+    //     formatedExpenses[index].push(expenses[index].chargeDay)
+    //   }else{
+    //     formatedExpenses[index].push(expenses[index].weekDay)
+    //   }
+    //   formatedExpenses[index].push(expenses[index].amount)
+    // });
+    // income.forEach(function(element, index){
+    //   formatedIncome[index].push(expenses[index].frequency)
+    //   formatedIncome[index].push(expenses[index].expenseName)
+    //   if(income[index].frequency !== 'w'){
+    //     formatedIncome[index].push(expenses[index].chargeDay)
+    //   }else{
+    //     formatedIncome[index].push(expenses[index].weekDay)
+    //   }
+    //   formatedIncome[index].push(expenses[index].amount)
+    // });
 
-    var budgetObj = {};
-    budgetObj.expenses = formatedExpenses;
-    budgetObj.income = formatedIncome;
-    console.log(budgetObj);
-      
+    // var budgetObj = {};
+    // budgetObj.expenses = formatedExpenses;
+    // budgetObj.income = formatedIncome;
+    console.log(result.data.budgets.nodes[0].budgetFields);
+    const budgetParsed = new Budget;
+    self.setState({
+      budgetParsed: budgetParsed.budgetThirtyDays(self.state.balance, result.data.budgets.nodes[0].budgetFields)
+    })      
   }
   
 
