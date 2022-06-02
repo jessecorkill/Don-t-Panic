@@ -17,7 +17,7 @@ function NavButton(props){
           <p>Not you?</p><button >Sign out!</button>
         </div>
         <ul>
-          <li><button >Edit Budget</button></li>
+          <li><button onClick={props.editNav}>Edit Budget</button></li>
           <li><button onClick={props.budgetNav}>Budget Outlook</button></li>
         </ul>
       </div>
@@ -29,7 +29,7 @@ function NavButton(props){
 //Function Component for Login View
 function LoginView(props){
   return(
-    <div id="loginView">
+    <div id="loginView" >
       <form className="" onSubmit="">
         <label>
           Username:
@@ -47,6 +47,11 @@ function LoginView(props){
   )
 }
 
+//Funciton Component for Editing Budget
+function BudgetView(props){
+
+}
+
 
 //Function Component for Calendar View
 function CalendarView(props){
@@ -54,23 +59,23 @@ function CalendarView(props){
 
   //TO DO - Convert budgetDays to a function sub component that can be clicked on to change modal view
   
-  if(props.budget !== null){
+  if(props.budget !== null && props.modalScreen === "budget"){
     //To DO - Compensate offset for first day of theBudget by spoofing calendarDay divs ahead of 
     //Get current day of the week
     let weekday = new Date(theBudget[0][0]).getDay();
     let spacerArr = new Array(weekday).fill(null);
-    const fillDays = spacerArr.map((day) => <div className="calendarDay"></div>);
+    const spacerDays = spacerArr.map((day) => <div className="calendarDay"></div>);
     const budgetDays = theBudget.map((day) => <div className="calendarDay" key={day[0]}><h2>{new Date(day[0]).getDate()}</h2><p>${day[1]}</p><p>{day[2]}</p></div>);
 
     return(
       <div id="calendarContainer">
-        {fillDays}
+        {spacerDays}
         {budgetDays}
       </div>
     )
   }else{
     return(
-      <h3>You have to make a budget first!</h3>
+      ""
     )
   }
 
@@ -81,7 +86,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       loggedIn: true,
-      modalScreen: 'edit',
+      modalScreen: 'budget',
       navState: 'hidden',
       userName: '',
       password: '',
@@ -169,12 +174,17 @@ class App extends React.Component {
       modalScreen: "budget",
     })
   }
+  handleBudgetEdit(self){
+    self.setState({
+      modalScreen: "edit",
+    })
+  }
 
   render(){
     return(
       <div className="App">
-        <NavButton navState={this.state.navState} budgetNav={()=> this.handleBudgetOverlook(this)} onClick={() => this.handleNavClick(this)}></NavButton>
-        <CalendarView budget={this.state.budgetParsed}></CalendarView>
+        <NavButton navState={this.state.navState} editNav={()=> this.handleBudgetEdit(this)} budgetNav={()=> this.handleBudgetOverlook(this)} onClick={() => this.handleNavClick(this)}></NavButton>
+        <CalendarView modalScreen={this.state.modalScreen} budget={this.state.budgetParsed}></CalendarView>
         
       </div>
       
