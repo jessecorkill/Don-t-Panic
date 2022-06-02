@@ -65,7 +65,7 @@ export class Budget{
         //Get the targeted day of the week
         let targetDay = element.weekDay;
         //Check if this day's weekday matches the targetDay
-        if (date.getDay() === targetDay) {
+        if (date.getDay() == targetDay) {
           predictedBal[index] = predictedBal[index] + element.amount;
           assocDetails[index].push(element.expenseName + " +" + element.amount + " ");
         }
@@ -77,7 +77,6 @@ export class Budget{
     expenses.forEach((element) => {
       //if the element's day is the same as the current iteration's day, start working
       if (element.chargeDay == date.getDate() && element.frequency != "w") {
-        console.log("Iteration Day & Iterated Element's Day Match");
         //Monthly Income
         if (element.frequency === "m") {
           //Made money this day, so we add to this day's balance
@@ -102,10 +101,11 @@ export class Budget{
         } else {
         }
       } else if (element.frequency === "w") {
+        console.log("Weekly Ran")
         //Get the targeted day of the week
         let targetDay = element.weekDay;
         //Check if this day's weekday matches the targetDay
-        if (date.getDay() === targetDay) {
+        if (date.getDay() == targetDay) {
           predictedBal[index] = predictedBal[index] - element.amount;
           assocDetails[index].push(element.expenseName + " -" + element.amount + " ");
         }
