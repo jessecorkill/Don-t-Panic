@@ -88,7 +88,7 @@ class App extends React.Component {
       loggedIn: true,
       modalScreen: 'budget',
       navState: 'hidden',
-      userName: '',
+      userName: 'jcorkill',
       password: '',
       balance: 342,
       budgetObj: null,
@@ -114,12 +114,23 @@ class App extends React.Component {
       client
       .query({
         query: gql`
-        query NewQuery {
-          budgets(where: {title: "jcorkill"}) {
+        query NewQuery($title: String = "${this.state.userName}") {
+          budgets(where: {title: $title}) {
             nodes {
               budgetFields {
-                uploadJson {
-                  mediaItemUrl
+                expenses {
+                  amount
+                  chargeDay
+                  expenseName
+                  frequency
+                  weekDay
+                }
+                income {
+                  amount
+                  chargeDay
+                  expenseName
+                  frequency
+                  weekDay
                 }
               }
             }
@@ -133,23 +144,38 @@ class App extends React.Component {
   }
 
   passBudget(self, result){
+    //Parse Data into the expected format for the budgetHandler.js & then pass it to the Budget obj
+    let expenses = result.data.budgets.nodes[0].budgetFields.expenses;
+    let formatedExpenses = Array.from({ length: expenses.length }, () => []);
+    let income = result.data.budgets.nodes[0].budgetFields.income;
+    let formatedIncome = Array.from({ length: income.length }, () => []);
 
-    let rawBudgetUrl = result.data.budgets.nodes[0].budgetFields.uploadJson.mediaItemUrl;
-    //fetch JSON from url via axios
-    axios({
-      method: 'get',
-      url: rawBudgetUrl,
-      responseType: 'json',
-    })
-    .then(function (response){           
-      console.log(response.data);
-      const budgetParsed = new Budget;
+    //Convert Data into -> Freq / Desc / Day / Amnt - format
+    expenses.forEach(function(element, index){
+      formatedExpenses[index].push(expenses[index].frequency)
+      formatedExpenses[index].push(expenses[index].expenseName)
+      if(expenses[index].frequency !== 'w'){
+        formatedExpenses[index].push(expenses[index].chargeDay)
+      }else{
+        formatedExpenses[index].push(expenses[index].weekDay)
+      }
+      formatedExpenses[index].push(expenses[index].amount)
+    });
+    income.forEach(function(element, index){
+      formatedIncome[index].push(expenses[index].frequency)
+      formatedIncome[index].push(expenses[index].expenseName)
+      if(income[index].frequency !== 'w'){
+        formatedIncome[index].push(expenses[index].chargeDay)
+      }else{
+        formatedIncome[index].push(expenses[index].weekDay)
+      }
+      formatedIncome[index].push(expenses[index].amount)
+    });
 
-      self.setState({
-        budgetParsed: budgetParsed.budgetThirtyDays(self.state.balance, response.data)
-      })
-
-    })
+    var budgetObj = {};
+    budgetObj.expenses = formatedExpenses;
+    budgetObj.income = formatedIncome;
+    console.log(budgetObj);
       
   }
   
