@@ -48,8 +48,42 @@ function LoginView(props){
 }
 
 //Funciton Component for Editing Budget
-function BudgetView(props){
+class BudgetView extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      balanceField: 0,
+    }
+    this.handleBalChange = this.handleBalChange.bind(this);
+  }
+  
+    handleBalChange(event){
+      this.setState({
+        balanceField: event.target.value
+      })
+    }
 
+
+ 
+    render(){
+      if(this.props.modalScreen === 'edit'){
+        return(
+          <div className="" id="editView" >
+          <form className="" onSubmit="">
+            <input type="submit" value="Submit" />
+          </form>
+          <form className="" onSubmit={this.props.setBal}>
+            <label>
+              Current Balance
+              <input onChange={this.handleBalChange} type="number" value={this.state.balanceField}></input>
+            </label>
+            <input type="submit" value="Submit" />
+          </form>
+          </div>
+        );
+      }
+  }
+  
 }
 
 
@@ -99,7 +133,7 @@ class App extends React.Component {
 
   }
   componentDidMount(){
-      console.log('component mounted')
+      console.log('App component mounted')
       //if data is available, fetch data
       const client = new ApolloClient({
         uri: 'https://budget.caylaslifemusic.com/graphql',
@@ -142,16 +176,13 @@ class App extends React.Component {
         this.passBudget(this, result)
       );
   }
-
+  //passes response to the budgetHandler.js
   passBudget(self, result){
-    let expenses = result.data.budgets.nodes[0].budgetFields.expenses;
-    let income = result.data.budgets.nodes[0].budgetFields.income;
     const budgetParsed = new Budget;
     self.setState({
       budgetParsed: budgetParsed.budgetThirtyDays(self.state.balance, result.data.budgets.nodes[0].budgetFields)
     })      
   }
-  
 
 
   //function for handling nav click
@@ -178,12 +209,18 @@ class App extends React.Component {
       modalScreen: "edit",
     })
   }
+  handleBalanceSet(self, event){
+    self.setState({
+      balance: event.target.value,
+    })
+  }
 
   render(){
     return(
       <div className="App">
-        <NavButton navState={this.state.navState} editNav={()=> this.handleBudgetEdit(this)} budgetNav={()=> this.handleBudgetOverlook(this)} onClick={() => this.handleNavClick(this)}></NavButton>
+        <NavButton navState={this.state.navState} editNav={() => this.handleBudgetEdit(this)} budgetNav={() => this.handleBudgetOverlook(this)} onClick={() => this.handleNavClick(this)}></NavButton>
         <CalendarView modalScreen={this.state.modalScreen} budget={this.state.budgetParsed}></CalendarView>
+        <BudgetView modalScreen={this.state.modalScreen} setBal={() => this.handleBalanceSet(this)} bal={this.state.balance}></BudgetView>
         
       </div>
       
