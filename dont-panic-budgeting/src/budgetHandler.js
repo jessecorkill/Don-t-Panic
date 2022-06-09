@@ -114,12 +114,12 @@ export class Budget{
       }
     });
   }
-  console.log('Associated Dates');
-  console.log(assocDates);
-  console.log('Predicted Bal');
-  console.log(predictedBal);
-  console.log('Associcated Details');
-  console.log(assocDetails);
+  // console.log('Associated Dates');
+  // console.log(assocDates);
+  // console.log('Predicted Bal');
+  // console.log(predictedBal);
+  // console.log('Associcated Details');
+  // console.log(assocDetails);
   let data = Array.from({ length: 30 }, () => []);
   for (var i = 0; i < 30; i++) {
     data[i].push(assocDates[i]);
