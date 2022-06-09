@@ -92,6 +92,7 @@ class App extends React.Component {
   passBudget(result){
     const budgetParsed = new Budget;
     this.setState({
+      budgetObj: result.data.budgets.nodes[0].budgetFields,
       budgetParsed: budgetParsed.budgetThirtyDays(this.state.balance, result.data.budgets.nodes[0].budgetFields)
     })      
   }
@@ -134,7 +135,7 @@ class App extends React.Component {
       <div className="App">
         <NavButton navState={this.state.navState} editNav={this.handleBudgetEdit} budgetNav={this.handleBudgetOverlook} onClick={this.handleNavClick}></NavButton>
         <CalendarView modalScreen={this.state.modalScreen} budget={this.state.budgetParsed}></CalendarView>
-        <BudgetView modalScreen={this.state.modalScreen} setBal={this.handleBalanceSet} bal={this.state.balance}></BudgetView>
+        <BudgetView modalScreen={this.state.modalScreen} setBal={this.handleBalanceSet} bal={this.state.balance} budgetObj={this.state.budgetObj}></BudgetView>
         
       </div>
       

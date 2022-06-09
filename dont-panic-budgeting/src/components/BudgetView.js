@@ -1,6 +1,21 @@
 import React from "react";
 
-//Funciton Component for Editing Budget
+//Component for interacting with individual budget items
+function BudgetItems(props){
+    const expenseItems = props.budgetObj.expenses.map(() => <form onSubmit=""><label>Test<input onChange=""></input></label></form>)
+    const incomeItems = props.budgetObj.income.map(() => <form onSubmit=""><label>Test<input onChange=""></input></label></form>)
+    return(
+        <div className="expense_items">
+            <h3>Edit Expense Items</h3>
+            {expenseItems}
+            <h3>Edit Income Items</h3>
+            {incomeItems}
+        </div>
+        
+    )
+}
+
+//Component for Editing Budget
 export class BudgetView extends React.Component{
     constructor(props){
       super(props);
@@ -37,9 +52,9 @@ export class BudgetView extends React.Component{
               </label>
               <input type="submit" value="Submit" />
             </form>
+            <BudgetItems budgetObj={this.props.budgetObj} />
             </div>
           );
         }
-    }
-    
+    }    
   }
