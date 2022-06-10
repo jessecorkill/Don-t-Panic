@@ -30,6 +30,7 @@ class App extends React.Component {
     this.handleBudgetEdit = this.handleBudgetEdit.bind(this);
     this.handleBalanceSet = this.handleBalanceSet.bind(this);
     this.fetchBudget = this.fetchBudget.bind(this);
+    this.updateBudget = this.updateBudget.bind(this);
   }
   componentDidMount(){
       console.log('App component mounted')
@@ -95,6 +96,11 @@ class App extends React.Component {
       budgetObj: result.data.budgets.nodes[0].budgetFields,
       budgetParsed: budgetParsed.budgetThirtyDays(this.state.balance, result.data.budgets.nodes[0].budgetFields)
     })      
+  }
+  updateBudget(newBudget){
+    this.setState({
+      budgetParsed: newBudget
+    })   
   }
 
 
