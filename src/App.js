@@ -1,85 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {ApolloClient, InMemoryCache, HttpLink, ApolloLink, ApolloProvider, useQuery, gql, createHttpLink} from '@apollo/client'
-import axios from 'axios';
-import {Budget} from './budgetHandler.js';
-
-//Function Component for Top Navigation
-function NavButton(props){
-  const self = this;
-  return(
-    <div id="nav_menu">
-      <button onClick={props.onClick}>Navigation Toggle</button>
-      <div className={props.navState}>
-        <div className="profile">
-          <h5>Your Name Here</h5>
-          <p>Not you?</p><button >Sign out!</button>
-        </div>
-        <ul>
-          <li><button onClick={props.editNav}>Edit Budget</button></li>
-          <li><button onClick={props.budgetNav}>Budget Outlook</button></li>
-        </ul>
-      </div>
-
-    </div>
-  )
-} 
-
-//Function Component for Login View
-function LoginView(props){
-  return(
-    <div id="loginView" >
-      <form className="" onSubmit="">
-        <label>
-          Username:
-          <input type="text" value=""></input>
-        </label>
-        <label>
-          Password:
-          <input type="password" value=""></input>
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
-
-
-    </div>
-  )
-}
-
-//Funciton Component for Editing Budget
-function BudgetView(props){
-
-}
-
-
-//Function Component for Calendar View
-function CalendarView(props){
-  const theBudget = props.budget;
-
-  //TO DO - Convert budgetDays to a function sub component that can be clicked on to change modal view
-  
-  if(props.budget !== null && props.modalScreen === "budget"){
-    //To DO - Compensate offset for first day of theBudget by spoofing calendarDay divs ahead of 
-    //Get current day of the week
-    let weekday = new Date(theBudget[0][0]).getDay();
-    let spacerArr = new Array(weekday).fill(null);
-    const spacerDays = spacerArr.map((day) => <div className="calendarDay"></div>);
-    const budgetDays = theBudget.map((day) => <div className="calendarDay" key={day[0]}><h2>{new Date(day[0]).getDate()}</h2><p>${day[1]}</p><p>{day[2]}</p></div>);
-
-    return(
-      <div id="calendarContainer">
-        {spacerDays}
-        {budgetDays}
-      </div>
-    )
-  }else{
-    return(
-      ""
-    )
-  }
-
-}
+import {ApolloClient, InMemoryCache, HttpLink, ApolloLink, ApolloProvider, useQuery, gql, createHttpLink} from '@apollo/client';
+import {BudgetView} from './components/BudgetView.js';
+import {Budget} from './budgetHandler';
+import {CalendarView} from './components/CalendarView.js';
+import {LoginView} from './components/LoginView.js';
+import {NavButton} from './components/NavButton.js';
 
 class App extends React.Component {
   constructor(props){
@@ -89,102 +16,132 @@ class App extends React.Component {
       modalScreen: 'budget',
       navState: 'hidden',
       userName: 'jcorkill',
-      password: '',
+      password: 'Mupp3th@t3r',
       balance: 375,
       budgetObj: null,
       budgetParsed: null,
 
 
     }
-
+    //Bind Component Funcitons
+    this.passBudget = this.passBudget.bind(this);
+    this.handleNavClick = this.handleNavClick.bind(this);
+    this.handleBudgetOverlook = this.handleBudgetOverlook.bind(this);
+    this.handleBudgetEdit = this.handleBudgetEdit.bind(this);
+    this.handleBalanceSet = this.handleBalanceSet.bind(this);
+    this.fetchBudget = this.fetchBudget.bind(this);
+    this.updateBudget = this.updateBudget.bind(this);
   }
   componentDidMount(){
-      console.log('component mounted')
-      //if data is available, fetch data
-      const client = new ApolloClient({
-        uri: 'https://budget.caylaslifemusic.com/graphql',
-        cache: new InMemoryCache(),
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
-          'Method': 'POST',
-          'mode': 'no-cors'
-        }
-      })
-
-      client
-      .query({
-        query: gql`
-        query NewQuery($title: String = "${this.state.userName}") {
-          budgets(where: {title: $title}) {
-            nodes {
-              budgetFields {
-                expenses {
-                  amount
-                  chargeDay
-                  expenseName
-                  frequency
-                  weekDay
-                }
-                income {
-                  amount
-                  chargeDay
-                  expenseName
-                  frequency
-                  weekDay
+      console.log('App component mounted')
+      this.fetchBudget()
+  }
+  //fetch data from API
+  fetchBudget(){
+    //todo: check if user is logged in
+    if(this.state.loggedIn === true){
+        //if data is available, fetch data
+        const client = new ApolloClient({
+          uri: 'https://budget.caylaslifemusic.com/graphql',
+          cache: new InMemoryCache(),
+          credentials: 'same-origin',
+          headers: {
+            'content-type': 'application/json',
+            'Method': 'POST',
+            'Authorization': 'Basic ' + btoa(this.state.userName + ':' + this.state.password),
+          }
+        })
+  
+        client
+        .query({
+          query: gql`
+          query NewQuery($title: String = "${this.state.userName}") {
+            budgets(where: {title: $title}) {
+              nodes {
+                budgetFields {
+                  expenses {
+                    amount
+                    chargeDay
+                    expenseName
+                    frequency
+                    weekDay
+                  }
+                  income {
+                    amount
+                    chargeDay
+                    expenseName
+                    frequency
+                    weekDay
+                  }
                 }
               }
             }
           }
-        }
-        `
-      })
-      .then(result =>       
-        this.passBudget(this, result)
-      );
+          `
+        })
+        .then(result =>       
+          this.passBudget(result)
+        );
+    }else{
+      alert("You must login first!");
+      //todo: switch modalScreen to Login component
+    }
+
   }
 
-  passBudget(self, result){
-    let expenses = result.data.budgets.nodes[0].budgetFields.expenses;
-    let income = result.data.budgets.nodes[0].budgetFields.income;
+  //passes response to the budgetHandler.js
+  passBudget(result){
     const budgetParsed = new Budget;
-    self.setState({
-      budgetParsed: budgetParsed.budgetThirtyDays(self.state.balance, result.data.budgets.nodes[0].budgetFields)
+    this.setState({
+      budgetObj: result.data.budgets.nodes[0].budgetFields,
+      budgetParsed: budgetParsed.budgetThirtyDays(this.state.balance, result.data.budgets.nodes[0].budgetFields)
     })      
   }
-  
+  updateBudget(newBudget){
+    this.setState({
+      budgetParsed: newBudget
+    })   
+  }
 
 
   //function for handling nav click
-  handleNavClick(self){
+  handleNavClick(){
     //check state of nav menu
-    if(self.state.navState === "hidden"){
-      self.setState({
+    if(this.state.navState === "hidden"){
+      this.setState({
         navState: "show",
       })
     }else{
-      self.setState({
+      this.setState({
         navState: "hidden",
       })
     }
   }
   //
-  handleBudgetOverlook(self){
-    self.setState({
+  handleBudgetOverlook(){
+    this.setState({
       modalScreen: "budget",
     })
   }
-  handleBudgetEdit(self){
-    self.setState({
+  handleBudgetEdit(){
+    this.setState({
       modalScreen: "edit",
     })
+  }
+  handleBalanceSet(amnt){
+    console.log("Balance Set")
+    this.setState({
+      balance: amnt,
+    })
+    this.fetchBudget();
   }
 
   render(){
     return(
       <div className="App">
-        <NavButton navState={this.state.navState} editNav={()=> this.handleBudgetEdit(this)} budgetNav={()=> this.handleBudgetOverlook(this)} onClick={() => this.handleNavClick(this)}></NavButton>
+        <NavButton navState={this.state.navState} editNav={this.handleBudgetEdit} budgetNav={this.handleBudgetOverlook} onClick={this.handleNavClick}></NavButton>
         <CalendarView modalScreen={this.state.modalScreen} budget={this.state.budgetParsed}></CalendarView>
+        <BudgetView modalScreen={this.state.modalScreen} setBal={this.handleBalanceSet} bal={this.state.balance} budgetObj={this.state.budgetObj}></BudgetView>
         
       </div>
       

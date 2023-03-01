@@ -1,33 +1,78 @@
 .App {
   text-align: center;
 }
-#nav_menu{
-  position:absolute;
+
+#nav_menu {
+  position: absolute;
   right: 0;
   background-color: #e3e3e3;
   z-index: 10;
-
 }
-.hidden{
+
+.hidden {
   display: none;
 }
-.show{
+
+.show {
   display: block;
 }
-#calendarContainer{
+
+#calendarContainer {
   width: 100vw;
   height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   position: absolute;
 }
-.calendarDay{
+
+.calendarDay {
+  background-color: white;
   border: solid black 2px;
   width: 14%;
   height: 20%;
 }
-.calendarDay h2{
+.calendarDay h2 {
   margin-top: 0;
   text-align: left;
+}
+
+.chargeDetails {
+  height: 50%;
+  width: 100%;
+  overflow-y: scroll;
+}
+.chargeDetails .charge {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  margin-bottom: 0px;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0.5em;
+}
+.chargeDetails .charge:hover button {
+  display: block;
+}
+.chargeDetails .charge p {
+  margin: 0;
+}
+.chargeDetails .charge button {
+  display: none;
 }
