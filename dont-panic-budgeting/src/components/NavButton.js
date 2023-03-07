@@ -6,7 +6,7 @@ export function NavButton(props){
         <div className={props.navState}>
           <div className="profile">
             <h5>Your Name Here</h5>
-            <p>Not you?</p><button >Sign out!</button>
+            <p>Not you?</p><button onClick={props.loginNav}>Sign out!</button>
           </div>
           <ul>
             <li><button onClick={props.editNav}>Edit Budget</button></li>

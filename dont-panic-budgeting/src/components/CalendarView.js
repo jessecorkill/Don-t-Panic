@@ -1,6 +1,7 @@
 //Function Component for Calendar View
 import React from 'react';
 
+
 //Child Component to help make charge items interactable.
 //Charges should allow for ammount changes or removal of charge for this app visit
 function Charges(props){
@@ -24,7 +25,6 @@ class CalendarDay extends React.Component{
         }
     }
     componentDidMount(){
-
     }
     componentDidUpdate(){
         //On Day's State Change, invoke a re-drawing of the budget with new values
@@ -36,6 +36,7 @@ class CalendarDay extends React.Component{
         return(
             <div className="calendarDay">
                 <h2>{new Date(this.props.budgetInstance[0]).getDate()}</h2>
+                <button>Edit</button>
                 <p>${this.props.budgetInstance[1]}</p>
                 <Charges detailsArr={this.props.budgetInstance[2]}></Charges>
             </div>   
