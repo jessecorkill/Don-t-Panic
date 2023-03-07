@@ -33,6 +33,7 @@
 }
 
 .calendarDay {
+  position: relative;
   background-color: white;
   border: solid black 2px;
   width: 14%;
@@ -41,6 +42,24 @@
 .calendarDay h2 {
   margin-top: 0;
   text-align: left;
+}
+.calendarDay button {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.calendarDay:hover button {
+  display: block;
+}
+.calendarDay.active {
+  background-color: grey;
+  position: absolute;
+  z-index: 100;
+  width: 90%;
+  height: 80%;
+  top: 50%;
+  margin-left: auto;
 }
 
 .chargeDetails {
@@ -75,4 +94,8 @@
 }
 .chargeDetails .charge button {
   display: none;
+}
+
+#editView .budgetForm input {
+  margin: 1em;
 }
