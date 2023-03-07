@@ -13,7 +13,8 @@ export default class WP_API {
       // Make the request using fetch
       const response = await fetch(url, {
         headers: {
-          "Authorization": `Basic ${encodedCredentials}`
+          "Authorization": `Basic ${encodedCredentials}`,
+          "Mode": 'no-cors',
         }
       });
   
@@ -40,7 +41,7 @@ export default class WP_API {
           method: 'POST',
           headers: {
             'Authorization': `Basic ${encodedCredentials}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: jsonString
         });
