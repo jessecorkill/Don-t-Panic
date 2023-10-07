@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('budgets', function (Blueprint $table) {
+            $table->id()->autoIncrement();
+            $table->string('name');
+            $table->string('description')->nullable($value = true);
+            $table->integer('amount');
+            $table->string('frequency');
+            $table->integer('day');
+            $table->boolean('is_expense')->default(true);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::drop('budgets');
+    }
+};
