@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BudgetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::prefix('/budget')->group(function(){
+    Route::get('/create', [BudgetController::class, 'create'])->name('budget.create');
+    Route::get('/', [BudgetController::class, 'index'])->name('budget.index');
+    Route::post('/', [BudgetController::class, 'store'])->name('budget.store');
+});
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');

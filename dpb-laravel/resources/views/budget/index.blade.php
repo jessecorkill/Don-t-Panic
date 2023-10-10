@@ -1,0 +1,1 @@
+<h1>Budget Index View</h1>

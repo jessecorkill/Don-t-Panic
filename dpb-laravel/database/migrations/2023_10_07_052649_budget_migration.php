@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('budgets', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->string('name');
-            $table->string('description')->nullable($value = true);
+            $table->string('description')->nullable();
             $table->integer('amount');
             $table->string('frequency');
             $table->integer('day');
-            $table->boolean('is_expense')->default(true);
+            $table->boolean('is_expense');
         });
     }
 
