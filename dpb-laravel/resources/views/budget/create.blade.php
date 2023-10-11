@@ -21,7 +21,19 @@
         method="POST"
         enctype="multipart/form-data">
         @csrf
-        
+                <label for="">Expense</label>
+        <input
+            type="radio"
+            name="is_expense"
+            value="1"
+            id="expense">
+        <label for="income">Income</label>
+        <input
+            type="radio"
+            name="is_expense"
+            value="0"
+            id="income">
+
         <input 
             type="string"
             name="name"
@@ -51,23 +63,18 @@
             id="bi-weekly"
             value="Bi-Weekly"
             class="">
+        <label for="semi-weekly">Semi-Monthly</label>
+        <input 
+            type="radio"
+            name="frequency"
+            id="semi-monthly"
+            value="Semi-Monthly"
+            class="">
         <input 
             type="number"
             name="day"
             placeholder="15"
             class="">
-        <label for="">Expense</label>
-        <input
-            type="radio"
-            name="is_expense"
-            value="1"
-            id="expense">
-        <label for="income">Income</label>
-        <input
-            type="radio"
-            name="is_expense"
-            value="0"
-            id="income">
 
         <button
             type="submit"
