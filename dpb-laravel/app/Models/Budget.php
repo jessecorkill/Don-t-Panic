@@ -10,7 +10,7 @@ class Budget extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'amount', 'frequency', 'day', 'is_expense'
+        'name', 'description', 'amount', 'frequency', 'day', 'is_expense', 'userID'
     ];
 
     protected $table = "budgets";

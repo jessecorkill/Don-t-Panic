@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Budget;
+use Illuminate\Support\Facades\Auth;
 
 class BudgetController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth')->only(['create', 'edit', 'update', 'destroy']);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -34,7 +38,8 @@ class BudgetController extends Controller
             'amount' => $request->amount,
             'frequency' => $request->frequency,
             'day' => $request->day,
-            'is_expense' => $request->is_expense
+            'is_expense' => $request->is_expense,
+            'userID' => Auth::id(),
         ]);
 
         return redirect(route('budget.index'));
