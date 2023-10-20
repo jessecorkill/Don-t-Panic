@@ -23,7 +23,9 @@ Route::prefix('/budget')->group(function(){
     Route::get('/create', [BudgetController::class, 'create'])->name('budget.create');
     Route::get('/', [BudgetController::class, 'index'])->name('budget.index');
     Route::post('/', [BudgetController::class, 'store'])->name('budget.store');
+    Route::get('/test', [BudgetController::class, 'simulateBudget'])->name('budget.simulate');
 });
+
 
 
 Route::get('/dashboard', function () {

@@ -11,8 +11,16 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("You're logged in!") }}
                     @include('budget.create')
+
                 </div>
             </div>
         </div>
+    </div>
+    <div class="py-12">
+        
+    <div class="calendar">
+        @for ($i = 0; $i < 42; $i++)
+            @include('budget.calendarDay')
+        @endfor
     </div>
 </x-app-layout>
